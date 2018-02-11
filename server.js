@@ -12,9 +12,10 @@ app.use(express.static('public'))
 
 // connect to MongoDB
 mongoose.connect('mongodb://localhost/blog_backend')
-var db = mongoose.connection
+const db = mongoose.connection
 
 db.on('error', console.error.bind(console, 'connection error:'))
+
 db.once('open', function () {
   console.log('connected to db')
 })
@@ -28,14 +29,15 @@ app.use(session({
   })
 }))
 
+// routes, before error handler
+require('./app/routes')(app, {})
+
 // error handler
 // define as the last app.use callback
 app.use(function (err, req, res, next) {
   res.status(err.status || 500)
-  res.send(err.message)
+  res.json({error: err.message})
 })
-
-require('./app/routes')(app, {})
 
 app.listen(port, () => {
   console.log(`live on port ${port}`)

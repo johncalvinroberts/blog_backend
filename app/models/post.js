@@ -4,7 +4,8 @@ const PostSchema = new mongoose.Schema({
   title: {
     type: String,
     unique: false,
-    required: true
+    required: false,
+    trim: true
   },
   body: {
     type: String,
@@ -13,11 +14,40 @@ const PostSchema = new mongoose.Schema({
   },
   slug: {
     type: String,
-    unique: true,
-    required: false
-  }
+    index: {
+      unique: true,
+      partialFilterExpression: {slug: {$type: 'string'}}
+    }
+  },
+  imgUrl: String,
+  tags: [String]
+}, {
+  timestamps: true
 })
 
-const Post = mongoose.model('Post', PostSchema)
+PostSchema.statics.findBySlug = function (slug) {
+  return new Promise((resolve, reject) => {
+    Post.findOne({slug: slug})
+      .then(post => resolve(post))
+      .catch(err => reject(err))
+  })
+}
 
+PostSchema.statics.getList = function (params) {
+  return new Promise((resolve, reject) => {
+    const skipAmt = params.page ? (params.page * 10) - 10 : 0
+    const tags = params.tags ? params.tags.split(',') : null
+    const query = Post.find()
+    if (tags) query.where('tags').all(tags)
+    query
+      .skip(skipAmt)
+      .limit(10)
+      .sort('-createdAt')
+      .select(['slug', 'title', 'createdAt', 'imgUrl'])
+      .then(posts => resolve(posts))
+      .catch(err => reject(err))
+  })
+}
+
+const Post = mongoose.model('Post', PostSchema)
 module.exports = Post
