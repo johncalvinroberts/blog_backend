@@ -4,21 +4,23 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
+const cors = require('cors')
 
 const port = 8000
-
-app.use(bodyParser.urlencoded({extended: true}))
-app.use(express.static('public'))
 
 // connect to MongoDB
 mongoose.connect('mongodb://localhost/blog_backend')
 const db = mongoose.connection
 
 db.on('error', console.error.bind(console, 'connection error:'))
-
 db.once('open', function () {
   console.log('connected to db')
 })
+
+// middele ware
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(express.static('public'))
+app.use(cors())
 
 app.use(session({
   secret: 'somethingspecial',
