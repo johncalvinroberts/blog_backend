@@ -16,7 +16,7 @@ module.exports = function (app, db) {
     const params = {body, title, imgUrl, slug, subtitle, tags}
     if (title) params.slug = slugify(title)
     if (tags) params.tags = JSON.parse(tags)
-    Object.keys(params).filter(field => {
+    Object.keys(params).map(field => {
       if (!params[field]) {
         delete params[field]
       }

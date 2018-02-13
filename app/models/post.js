@@ -7,6 +7,12 @@ const PostSchema = new mongoose.Schema({
     required: false,
     trim: true
   },
+  subtitle: {
+    type: String,
+    unique: false,
+    required: false,
+    trim: true
+  },
   body: {
     type: String,
     unique: false,
