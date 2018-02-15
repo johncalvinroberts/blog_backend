@@ -21,9 +21,9 @@ const UserSchema = new mongoose.Schema({
 })
 
 // authenticate input against database
-UserSchema.statics.authenticate = function (email, password) {
+UserSchema.statics.authenticate = function (username, password) {
   return new Promise((resolve, reject) => {
-    const execPromise = User.findOne({ email: email }).exec()
+    const execPromise = User.findOne({ username: username }).exec()
     const passPromise = execPromise.then(user => {
       if (!user) throw new Error('User not found')
       return bcrypt.compare(password, user.password)

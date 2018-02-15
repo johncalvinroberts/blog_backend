@@ -21,14 +21,14 @@ module.exports = function (app, db) {
   })
 
   app.post('/login', (req, res, next) => {
-    const {logEmail, logPassword} = req.body
-    if (logEmail && logPassword) {
-      User.authenticate(logEmail, logPassword)
+    const {username, password} = req.body
+    if (username && password) {
+      User.authenticate(username, password)
         .then(user => {
           console.log('WOOOO')
           req.session.userId = user._id
           const data = {username: user.username, email: user.email}
-          res.status(200).json(user)
+          res.status(200).json(data)
         })
         .catch(err => {
           console.log(err)
