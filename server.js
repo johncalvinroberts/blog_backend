@@ -32,8 +32,13 @@ app.use(cors())
 
 app.use(session({
   secret: 'somethingspecial',
+  name: 'sessionid',
   resave: true,
   saveUninitialized: false,
+  cookie: {
+    path: '/',
+    httpOnly: false
+  },
   store: new MongoStore({
     mongooseConnection: db
   })
